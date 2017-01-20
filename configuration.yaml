@@ -108,5 +108,31 @@ media_player:
   - platform: braviatv
     host: 192.168.1.112
 
+binary_sensor:
+  - platform: rpi_gpio
+    invert_logic: true
+    ports:
+      17: Yellow
+      18: Blue
+      21: Red
+
+automation: 
+  - alias: Toggle Jordans Room light
+    trigger: 
+      - platform: state
+        entity_id: binary_sensor.yellow
+        to: 'on'
+    action:
+      service: homeassistant.toggle
+      entity_id: light.jordans_room
+  - alias: Toggle bedroom light
+    trigger: 
+      - platform: state
+        entity_id: binary_sensor.blue
+        to: 'on'
+    action:
+      service: homeassistant.toggle
+      entity_id: light.bedroom
+
 script: !include scripts.yaml
 group: !include_dir_merge_named group
