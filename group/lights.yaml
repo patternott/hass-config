@@ -1,0 +1,7 @@
+lights:
+  name: Lights
+  view: yes
+  control: hidden
+  entities: 
+    - group.all_lights
+  icon: mdi:lightbulb

@@ -1,0 +1,8 @@
+travel:
+  - sensor.home_to_work
+  - sensor.work_to_home
+weather:
+  - sensor.bom_melbourne_air_temp_c
+  - sensor.bom_melbourne_relative_humidity
+  - sensor.bom_melbourne_feels_like_c
+  - sun.sun
