@@ -1,0 +1,8 @@
+ha.env
+.HA_VERSION
+.uuid
+deps/
+home-assistant.log
+home-assistant_v2.db
+known_devices.yaml
+bravia.conf
