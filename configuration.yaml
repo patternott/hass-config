@@ -2,8 +2,8 @@ homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
   # Location required to calculate the time the sun rises and sets
-  latitude: !env_var HA_LOC_LAT
-  longitude: !env_var HA_LOC_LONG
+  latitude: !secret HA_LOC_LAT
+  longitude: !secret HA_LOC_LONG
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 141
   # metric for Metric, imperial for Imperial
@@ -43,7 +43,7 @@ frontend:
 
 http:
   # Uncomment this to add a password (recommended!)
-  api_password: !env_var HA_API_PASSWORD
+  api_password: !secret HA_API_PASSWORD
   # Uncomment this if you are using SSL or running in Docker etc
   # base_url: example.duckdns.org:8123
 
@@ -80,14 +80,14 @@ tts:
 sensor:
   - platform: google_travel_time
     name: Home To Work
-    api_key: !env_var HA_MAPS_API_KEY
-    origin: !env_var HA_HOME_ADDR
-    destination:  !env_var HA_WORK_ADDR
+    api_key: !secret HA_MAPS_API_KEY
+    origin: !secret HA_HOME_ADDR
+    destination:  !secret HA_WORK_ADDR
   - platform: google_travel_time
     name: Work To Home
-    api_key: !env_var HA_MAPS_API_KEY
-    destination: !env_var HA_HOME_ADDR
-    origin: !env_var HA_WORK_ADDR
+    api_key: !secret HA_MAPS_API_KEY
+    destination: !secret HA_HOME_ADDR
+    origin: !secret HA_WORK_ADDR
   - platform: bom
     station: IDV60901.95936
     name: Melbourne
@@ -97,17 +97,17 @@ sensor:
       - rel_hum
       - press
   # - platform: pocketcasts
-  #   username: !env_var HA_RING_USER
-  #   password: !env_var HA_RING_PASS
+  #   username: !secret HA_RING_USER
+  #   password: !secret HA_RING_PASS
   - platform: ring
-    username: !env_var HA_RING_USER
-    password: !env_var HA_RING_PASS
+    username: !secret HA_RING_USER
+    password: !secret HA_RING_PASS
     monitored_conditions:
       - battery
       - last_activity
       - volume
   - platform: waqi
-    token: !env_var HA_WAQI_API_KEY
+    token: !secret HA_WAQI_API_KEY
     locations:
       - alphinton
   - platform: speedtest
