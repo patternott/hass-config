@@ -10,8 +10,8 @@ homeassistant:
   unit_system: metric
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Australia/Melbourne
-  customize: 
-    script.timed_lamp: 
+  customize:
+    script.timed_lamp:
       hidden: true
     script.timer_off:
       hidden: true
@@ -20,6 +20,10 @@ homeassistant:
     script.front_door_motion_off:
       hidden: true
     group.all_lights:
+      hidden: false
+    automation.toggle_bedroom_light:
+      hidden: false
+    automation.toggle_jordans_room_light:
       hidden: false
     light.front_door:
       icon: mdi:glassdoor
@@ -52,7 +56,7 @@ discovery:
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
-# Enables support for tracking state changes over time.
+#Enables support for tracking state changes over time.
 history:
 
 # View all events in a logbook
@@ -61,16 +65,17 @@ logbook:
 # Track the sun
 sun:
 
+config:
+
 # Text to speech
 tts:
   platform: google
 
 # device_tracker:
-#  - platform: tplink
-#    host: 192.168.1.1
-#    username: admin
-#    password: admin
-#    track_new_devices: no
+#  - platform: netgear
+#    host: 192.168.0.1
+#    username: 'admin'
+#    password: 'password'
 
 sensor:
   - platform: google_travel_time
@@ -88,25 +93,53 @@ sensor:
     name: Melbourne
     monitored_conditions:
       - air_temp
-      - rel_hum
       - apparent_t
-  
+      - rel_hum
+      - press
+  # - platform: pocketcasts
+  #   username: !env_var HA_RING_USER
+  #   password: !env_var HA_RING_PASS
+  - platform: ring
+    username: !env_var HA_RING_USER
+    password: !env_var HA_RING_PASS
+    monitored_conditions:
+      - battery
+      - last_activity
+      - volume
+  - platform: waqi
+    token: !env_var HA_WAQI_API_KEY
+    locations:
+      - alphinton
+  - platform: speedtest
+    hour:
+      - 0
+      - 4
+      - 8
+      - 12
+      - 16
+      - 20
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+
 wemo:
 
 camera:
   platform: generic
   still_image_url: http://www.bom.gov.au/radar/IDR023.gif
   name: RainRadar
+  limit_refetch_to_url_change: true
 
-# emulated_hue:
-#   type: alexa
-#   expose_by_default: true
-#   exposed_domains:
-#     - light
+#emulated_hue:
+#  type: alexa
+#  expose_by_default: true
+#  exposed_domains:
+#    - light
 
-media_player:
-  - platform: braviatv
-    host: 192.168.1.112
+#media_player:
+#  - platform: braviatv
+#    host: 192.168.1.104
 
 binary_sensor:
   - platform: rpi_gpio
@@ -116,9 +149,19 @@ binary_sensor:
       18: Blue
       21: Red
 
-automation: 
+panel_iframe:
+  modem:
+    title: 'Modem'
+    icon: mdi:access-point
+    url: 'http://192.168.0.1'
+  router:
+    title: 'Router'
+    icon: mdi:router-wireless
+    url: 'http://192.168.0.2'
+
+automation:
   - alias: Toggle Jordans Room light
-    trigger: 
+    trigger:
       - platform: state
         entity_id: binary_sensor.yellow
         to: 'on'
@@ -126,13 +169,23 @@ automation:
       service: homeassistant.toggle
       entity_id: light.jordans_room
   - alias: Toggle bedroom light
-    trigger: 
+    trigger:
       - platform: state
         entity_id: binary_sensor.blue
         to: 'on'
     action:
       service: homeassistant.toggle
       entity_id: light.bedroom
+  - alias: Wake up light
+    trigger:
+      platform: time
+      after: "08:00:00"
+    action:
+      service: light.turn_on
+      entity_id: light.bedroom
+      data:
+        # 900 seconds = 15 minutes
+        transition: 900
 
 script: !include scripts.yaml
 group: !include_dir_merge_named group
