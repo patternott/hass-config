@@ -1,0 +1,191 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !env_var HA_LOC_LAT
+  longitude: !env_var HA_LOC_LONG
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 141
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Australia/Melbourne
+  customize:
+    script.timed_lamp:
+      hidden: true
+    script.timer_off:
+      hidden: true
+    script.front_door_motion:
+      hidden: true
+    script.front_door_motion_off:
+      hidden: true
+    group.all_lights:
+      hidden: false
+    automation.toggle_bedroom_light:
+      hidden: false
+    automation.toggle_jordans_room_light:
+      hidden: false
+    light.front_door:
+      icon: mdi:glassdoor
+    light.living_room:
+      icon: mdi:television
+    light.bedroom:
+      icon: mdi:hotel
+    light.jordans_room:
+      icon: mdi:laptop
+
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+http:
+  # Uncomment this to add a password (recommended!)
+  api_password: !env_var HA_API_PASSWORD
+  # Uncomment this if you are using SSL or running in Docker etc
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+updater:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+#Enables support for tracking state changes over time.
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+config:
+
+# Text to speech
+tts:
+  platform: google
+
+# device_tracker:
+#  - platform: netgear
+#    host: 192.168.0.1
+#    username: 'admin'
+#    password: 'password'
+
+sensor:
+  - platform: google_travel_time
+    name: Home To Work
+    api_key: !env_var HA_MAPS_API_KEY
+    origin: !env_var HA_HOME_ADDR
+    destination:  !env_var HA_WORK_ADDR
+  - platform: google_travel_time
+    name: Work To Home
+    api_key: !env_var HA_MAPS_API_KEY
+    destination: !env_var HA_HOME_ADDR
+    origin: !env_var HA_WORK_ADDR
+  - platform: bom
+    station: IDV60901.95936
+    name: Melbourne
+    monitored_conditions:
+      - air_temp
+      - apparent_t
+      - rel_hum
+      - press
+  # - platform: pocketcasts
+  #   username: !env_var HA_RING_USER
+  #   password: !env_var HA_RING_PASS
+  - platform: ring
+    username: !env_var HA_RING_USER
+    password: !env_var HA_RING_PASS
+    monitored_conditions:
+      - battery
+      - last_activity
+      - volume
+  - platform: waqi
+    token: !env_var HA_WAQI_API_KEY
+    locations:
+      - alphinton
+  - platform: speedtest
+    hour:
+      - 0
+      - 4
+      - 8
+      - 12
+      - 16
+      - 20
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+
+wemo:
+
+camera:
+  platform: generic
+  still_image_url: http://www.bom.gov.au/radar/IDR023.gif
+  name: RainRadar
+  limit_refetch_to_url_change: true
+
+#emulated_hue:
+#  type: alexa
+#  expose_by_default: true
+#  exposed_domains:
+#    - light
+
+#media_player:
+#  - platform: braviatv
+#    host: 192.168.1.104
+
+binary_sensor:
+  - platform: rpi_gpio
+    invert_logic: true
+    ports:
+      17: Yellow
+      18: Blue
+      21: Red
+
+panel_iframe:
+  modem:
+    title: 'Modem'
+    icon: mdi:access-point
+    url: 'http://192.168.0.1'
+  router:
+    title: 'Router'
+    icon: mdi:router-wireless
+    url: 'http://192.168.0.2'
+
+automation:
+  - alias: Toggle Jordans Room light
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.yellow
+        to: 'on'
+    action:
+      service: homeassistant.toggle
+      entity_id: light.jordans_room
+  - alias: Toggle bedroom light
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.blue
+        to: 'on'
+    action:
+      service: homeassistant.toggle
+      entity_id: light.bedroom
+  - alias: Wake up light
+    trigger:
+      platform: time
+      after: "08:00:00"
+    action:
+      service: light.turn_on
+      entity_id: light.bedroom
+      data:
+        # 900 seconds = 15 minutes
+        transition: 900
+
+script: !include scripts.yaml
+group: !include_dir_merge_named group

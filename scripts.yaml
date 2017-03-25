@@ -1,0 +1,47 @@
+  timed_lamp:
+    alias: "Turn on Jordans room for 10 seconds"
+    sequence:
+      # Cancel ev. old timers
+      - service: script.turn_off
+        data:
+           entity_id: script.timer_off
+      - service: light.turn_on
+        data:
+          entity_id: light.jordans_room
+      # Set new timer
+      - service: script.turn_on
+        data:
+          entity_id: script.timer_off
+
+  timer_off:
+    alias: "Turn off lamp after 10 seconds"
+    sequence:
+      - delay:
+          seconds: 10
+      - service: light.turn_off
+        data:
+          entity_id: light.jordans_room
+
+  front_door_motion:
+    alias: "Front door motion detected"
+    sequence:
+      # Cancel ev. old timers
+      - service: script.turn_off
+        data:
+           entity_id: script.front_door_motion_off
+      - service: light.turn_on
+        data:
+          entity_id: light.front_door
+      # Set new timer
+      - service: script.turn_on
+        data:
+          entity_id: script.front_door_motion_off
+
+  front_door_motion_off:
+    alias: "Turn off front door light after 2 minutes"
+    sequence:
+      - delay:
+          minutes: 2
+      - service: light.turn_off
+        data:
+          entity_id: light.front_door

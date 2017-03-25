@@ -1,0 +1,27 @@
+travel:
+  name: Travel
+  entities:
+    - sensor.home_to_work
+    - sensor.work_to_home
+weather:
+  name: Weather
+  entities:
+    - sensor.bom_melbourne_air_temp_c
+    - sensor.bom_melbourne_relative_humidity
+    - sensor.bom_melbourne_feels_like_c
+    - sensor.bom_melbourne_pressure_mb
+    - sun.sun
+    - sensor.waqi_alphington
+metadata:
+  name: Metadata
+  entities:
+    - sensor.speedtest_ping
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+doorbell:
+  name: Doorbell
+  entities:
+    - sensor.ring_bar_volume
+    - sensor.ring_front_door_battery
+    - sensor.ring_front_door_last_activity
+    - sensor.ring_front_door_volume
