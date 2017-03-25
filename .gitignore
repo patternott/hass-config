@@ -1,4 +1,4 @@
-ha.env
+secrets.yaml
 .HA_VERSION
 .uuid
 deps/
