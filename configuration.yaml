@@ -158,6 +158,22 @@ panel_iframe:
     title: 'Router'
     icon: mdi:router-wireless
     url: 'http://192.168.0.2'
+switch:
+  platform: rpi_rf
+  gpio: 25
+  switches:
+    switch1:
+      code_on: 15048719
+      code_off: 15048711
+    switch2:
+      code_on: 6660111
+      code_off: 6660103
+    switch3:
+      code_on: 2465807
+      code_off: 2465799
+    switch4:
+      code_on: 10854415
+      code_off: 10854407
 
 automation:
   - alias: Toggle Jordans Room light

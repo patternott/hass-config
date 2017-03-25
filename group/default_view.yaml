@@ -1,7 +1,0 @@
-default_view: 
-  view: yes
-  entities: 
-    - group.all_lights
-    - group.travel
-    - group.weather
-    - camera.rainradar
