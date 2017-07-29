@@ -1,9 +1,9 @@
-media:
-  view: yes
-  entities:
-    - media_player.main_tv
-    - media_player.jordans_bedroom
-    - media_player.jordans_room
-    - media_player.master_bedroom
-    - media_player.sony_bravia_tv
-  icon: mdi:play-pause
+# media:
+#   view: yes
+#   entities:
+#     - media_player.main_tv
+#     - media_player.jordans_bedroom
+#     - media_player.jordans_room
+#     - media_player.master_bedroom
+#     - media_player.sony_bravia_tv
+#   icon: mdi:play-pause

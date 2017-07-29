@@ -45,3 +45,49 @@
       - service: light.turn_off
         data:
           entity_id: light.front_door
+  
+  timer_bedroom_fan_off:
+    alias: "Bedroom fan timer"
+    sequence:
+      - delay: '00:{{ states.input_slider.fantimer.state | int }}:00'
+      - service: homeassistant.turn_off
+        data:
+          entity_id: switch.bedroom_fan
+
+  night_light:
+    alias: "Night light"
+    sequence:
+      - service: light.turn_on
+        data:
+          entity_id: light.bedroom
+          brightness_pct: 5
+      - delay: 
+          seconds: 60
+      - service: light.turn_off
+        data:
+          entity_id: light.bedroom
+
+  sleep_mode_alarm_on:
+    alias: "Sleep mode alarm on"
+    sequence:
+      - service: light.turn_on
+        data:
+          entity_id: light.bedroom
+          brightness_pct: 100
+  
+  sleep_mode_alarm_snooze:
+    alias: "Sleep mode snooze"
+    sequence:
+      - service: light.turn_off
+        data:
+          entity_id: light.bedroom
+
+  sleep_mode_off:
+    alias: "Sleep mode off"
+    sequence:
+      - service: light.turn_off
+        data:
+          entity_id: light.bedroom
+      - service: homeassistant.turn_off
+        data:
+          entity_id: input_boolean.sleep_mode

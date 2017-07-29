@@ -1,0 +1,164 @@
+- id: toggle-jordans-light-pi
+  alias: Toggle Jordans Room Light - PI
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.piyellow
+    to: 'on'
+  action:
+    service: homeassistant.toggle
+    entity_id: light.jordans_room
+- id: toggle-bedroom-light-pi
+  alias: Toggle Bedroom Light - PI
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.piblue
+    to: 'on'
+  action:
+    service: homeassistant.toggle
+    entity_id: light.bedroom
+- id: toggle-bedroom-light-w1
+  alias: Toggle Bedroom Light - W1-MQTT
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.w1button1
+    to: 'on'
+  action:
+    service: homeassistant.toggle
+    entity_id: light.bedroom
+- id: reset-bedroom-led-w1
+  alias: Reset Bedroom LED - W1-MQTT
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.w1button2
+    to: 'on'
+  action:
+  - service: homeassistant.turn_off
+    entity_id: light.w1greenled
+  - service: homeassistant.turn_off
+    entity_id: light.w1redled
+  - service: homeassistant.turn_off
+    entity_id: light.w1blueled
+- id: front-door-motion
+  alias: Front Door Motion
+  trigger:
+    platform: state
+    entity_id: binary_sensor.ring_front_door_motion
+    to: 'on'
+  action:
+    service: script.turn_on
+    entity_id: script.front_door_motion
+- id: traffic-led-40
+  alias: TrafficLED <40
+  trigger:
+    platform: time
+    after: 08:00:00
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_to_work
+    below: 40
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: homeassistant.turn_on
+    entity_id: light.w1greenled
+  - service: homeassistant.turn_off
+    entity_id: light.w1blueled
+  - service: homeassistant.turn_off
+    entity_id: light.w1redled
+- id: traffic-led-40-50
+  alias: TrafficLED 41-50
+  trigger:
+    platform: time
+    after: 08:00:00
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_to_work
+    above: 41
+    below: 49
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: homeassistant.turn_on
+    entity_id: light.w1greenled
+  - service: homeassistant.turn_off
+    entity_id: light.w1blueled
+  - service: homeassistant.turn_on
+    entity_id: light.w1redled
+- id: traffic-led-50
+  alias: TrafficLED > 50
+  trigger:
+    platform: time
+    after: 08:00:00
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_to_work
+    above: 50
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: homeassistant.turn_off
+    entity_id: light.w1greenled
+  - service: homeassistant.turn_off
+    entity_id: light.w1blueled
+  - service: homeassistant.turn_on
+    entity_id: light.w1redled
+- id: daily-notification
+  alias: Daily Notification
+  trigger:
+    platform: time
+    after: 08:30:00
+  condition:
+    condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+    service: notify.pushbullet
+    data:
+      title: Daily Briefing
+      message: "Commute to work is {{ states.sensor.home_to_work.state }} minutes.\
+        \ Current temperature is {{ states.sensor.bom_melbourne_air_temp_c.state }}\xB0\
+        C. Forecast max is {{ states.sensor.melbourne_maximum.state }}\xB0C"
+- id: '1496236120944'
+  alias: Room motion
+  trigger:
+    platform: state
+    entity_id: binary_sensor.n3motion
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: state
+    entity_id: device_tracker.jordan
+    state: home
+  action:
+    service: homeassistant.turn_on
+    entity_id: light.jordans_room
+- id: '1496236120945'
+  alias: Room motion off
+  trigger:
+    platform: state
+    entity_id: binary_sensor.n3motion
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: state
+    entity_id: device_tracker.jordan
+    state: home
+  action:
+    service: homeassistant.turn_off
+    entity_id: light.jordans_room
+- alias: Media room - heater off
+  id: '1498829387746'
+  trigger:
+  - entity_id: remote.media_room
+    platform: state
+    to: 'off'
+  action:
+    service: homeassistant.turn_off
+    entity_id: switch.heater
